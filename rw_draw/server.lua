@@ -59,7 +59,6 @@ AddEventHandler('rw_draw:Remove', function(texname)
     if perms(player) then
         for i, v in pairs(MASTER) do
             if texname == v.texname then
-                MASTER[i] = nil
                 Remove(i)
             end
         end
@@ -106,6 +105,7 @@ end
 
 function Remove(id)
     TriggerClientEvent('rw_draw:Remove',-1,MASTER[id].texname)
+    MASTER[i] = nil
     save()
 end
 ---------------------------------------------------

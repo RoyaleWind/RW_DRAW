@@ -34,10 +34,12 @@ end)
 RegisterNetEvent('rw_draw:GetData')
 AddEventHandler('rw_draw:GetData', function()
     local player = source
+    local staff = false
     while MASTER == nil do 
         Citizen.Wait(1000)
     end
-    TriggerClientEvent('rw_draw:Initialize',player,MASTER)
+    staff = perms(player)
+    TriggerClientEvent('rw_draw:Initialize',player,MASTER,staff)
 end)
 
 RegisterNetEvent('rw_draw:UpdateImage')

@@ -22,6 +22,7 @@ local cache = {}
 local cache_int = 0
 local devmode = false
 local poster = false 
+local staff = false
 ---------------------------------------------------
 ---[SETUP]
 ---------------------------------------------------
@@ -32,33 +33,35 @@ end)
 ---[CREATE A NEW CANVAS]
 ---------------------------------------------------
 RegisterCommand("poster", function(source, args, rawCommand)
-    if poster then return end
+    if not staff then clmsg("INSUFFICIENT PERMISSIONS") return end
+    if poster then clmsg("ACTION CANCELLED") return end
+
     poster = true 
     tpm1 = getray("[1] TOP LEFT")
-    if tpm1 == nil then clmsg("CANCELED") poster = false return end
+    if tpm1 == nil then clmsg("ACTION CANCELLED") poster = false return end
     Citizen.Wait(1000)
     draw = true
-    tpm2 = getray("[2] BOTOM DOWN")
+    tpm2 = getray("[2] BOTTOM DOWN")
     draw = false
-    if tpm2 == nil then clmsg("CANCELED") poster = false return end
+    if tpm2 == nil then clmsg("ACTION CANCELLED") poster = false return end
 
     local key = randomString(4)
     ---[STAFF INPOUT]
     local data = exports[Dialog]:Create("ENTER URL", 'HTPS')
     local url = data.value
-    if url == nil then clmsg("CANCELED") poster = false return end
+    if url == nil then clmsg("ACTION CANCELLED") poster = false return end
 
     local data = exports[Dialog]:Create("TX NAME", 'not use the same name')
     local name = data.value
-    if name == nil then clmsg("CANCELED")  poster = false return end
+    if name == nil then clmsg("ACTION CANCELLED")  poster = false return end
 
     local data = exports[Dialog]:Create("width of url", 'only numbers pls')
     local width = tonumber(data.value)
-    if width == nil then clmsg("CANCELED") poster = false return end
+    if width == nil then clmsg("ACTION CANCELLED") poster = false return end
 
     local data = exports[Dialog]:Create("height of url", 'only numbers pls')
     local height = tonumber(data.value)
-    if height == nil then clmsg("CANCELED") poster = false return end
+    if height == nil then clmsg("ACTION CANCELLED") poster = false return end
     ---------------------------------------------------
     name = key.."_"..name
     cache_int = R_INT + 1
@@ -79,7 +82,7 @@ RegisterCommand("poster", function(source, args, rawCommand)
     cache[cache_int].bl = bottomLeft
     cache[cache_int].br = bottomRight
     TriggerServerEvent("rw_draw:regnew",cache[cache_int])
-    clmsg("YOU CREATED A NEW POSTER")
+    clmsg("NEW POSTER CREATED")
     poster = false 
     -- NewInit(cache[cache_int])
     -- DevUi()
@@ -87,7 +90,8 @@ end, false)
 ---------------------------------------------------
 ---[FILL REGISTRY]
 ---------------------------------------------------
-function Initialize(data)
+function Initialize(data,role)
+    staff = role
     local data = data
     for i, v in pairs(data) do
         R_INT = R_INT + 1
@@ -126,7 +130,7 @@ end
 
 function InitializePoster(key)
     Citizen.CreateThread(function()
-        clmsg("[PSOTER]:"..key..":STARTED")
+        clmsg("[PSOTER]:"..key..":INITIATED")
         local topLeft = REGISTRY[key].tl
         local topright = REGISTRY[key].tr
         local bottomLeft = REGISTRY[key].bl
@@ -153,7 +157,6 @@ function InitializePoster(key)
             end
             Citizen.Wait(time)
         end
-        clmsg("[PSOTER]:"..key..":ENDED")
     end)
 end
 ---------------------------------------------------
@@ -166,7 +169,7 @@ function UpdateImage(texname,url)
             local duiobj = v.duiObj
             REGISTRY[i].url = url
             SetDuiUrl(duiobj,url)
-            clmsg("CANVAS UPDATED ID:"..name)
+            clmsg("POSTER UPDATE ID:"..name)
         end
     end
 end
@@ -178,7 +181,7 @@ function Remove(texname)
             local duiobj = v.duiObj
             DestroyDui(duiobj)
             REGISTRY[i] = nil
-            clmsg("CANVAS DELETED ID:"..name)
+            clmsg("POSTER DELETED ID:"..name)
         end
     end
 end
@@ -292,7 +295,7 @@ end
 
 function DevUi()
     Citizen.CreateThread(function()
-        clmsg("[DEVMODE] ON")
+        clmsg("DEVELOPMENT MODE: ENABLED")
         local time = 0
         local found = false
         while devmode do 
@@ -312,11 +315,11 @@ function DevUi()
                         end 
                     end
                     if IsControlJustReleased(0, 178) then ---[DEL DELETE]
-                        if exports[Dialog]:Decision("ARE YOU SURE YOU WONT TO DELETE", 'THIS CANVAS', '', 'YES', 'NO').action == 'submit' then
+                        if exports[Dialog]:Decision("ARE YOU SURE YOU WANT TO DELETE?", 'THIS CANVAS', '', 'YES', 'NO').action == 'submit' then
                             TriggerServerEvent("rw_draw:Remove",v.texname)
                             time = 1000
                         else
-                            clmsg('[CANCLED ACTION TO DELETE]')
+                            clmsg('[ACTION CANCELLATION NOTICE]')
                         end 
                     end
                 end
@@ -326,7 +329,7 @@ function DevUi()
                 time = 0
             end
         end
-        clmsg("[DEVMODE] OFF")
+        clmsg("DEVELOPMENT MODE: DISABLED")
     end)
 end
 

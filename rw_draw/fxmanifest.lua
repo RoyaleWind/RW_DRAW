@@ -3,21 +3,14 @@ games { 'gta5' }
 
 author 'RoyaleWind'
 description 'RW DRAW'
-version '1.0.0'
-
+version '1.2.0'
 lua54 'on'
-
-
 
 client_scripts {
     'client.lua',
 }
 
 server_scripts {
-    'server.lua'
+    'server.lua',
+    'permistions.lua',
 }
-
-shared_scripts {
-    'config.lua'
-}
-

@@ -105,15 +105,12 @@ end
 
 function Remove(id)
     TriggerClientEvent('rw_draw:Remove',-1,MASTER[id].texname)
-    MASTER[i] = nil
+    MASTER[id] = nil
     save()
 end
 ---------------------------------------------------
 ---[UTILS]
 ---------------------------------------------------
-function perms(id) ---[ADD YOUR PERMISION SYSTEM]
-    return true
-end
 
 function playerloaded(id)
     DoesEntityExist(GetPlayerPed(id))

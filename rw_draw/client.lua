@@ -308,11 +308,13 @@ function DevUi()
                         local amount = data.value
                         if amount then
                             TriggerServerEvent("rw_draw:UpdateImage",v.texname,amount)
+                            time = 1000
                         end 
                     end
                     if IsControlJustReleased(0, 178) then ---[DEL DELETE]
                         if exports[Dialog]:Decision("ARE YOU SURE YOU WONT TO DELETE", 'THIS CANVAS', '', 'YES', 'NO').action == 'submit' then
                             TriggerServerEvent("rw_draw:Remove",v.texname)
+                            time = 1000
                         else
                             clmsg('[CANCLED ACTION TO DELETE]')
                         end 
@@ -320,6 +322,9 @@ function DevUi()
                 end
             end
             Citizen.Wait(time)
+            if time ~= 0 then 
+                time = 0
+            end
         end
         clmsg("[DEVMODE] OFF")
     end)
